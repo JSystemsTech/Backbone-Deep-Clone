@@ -1,0 +1,60 @@
+{
+  "name": "backbonedeepclone",
+  "version": "1.0.0",
+  "description": "A Helper function to deep clone JavaScript objects with support for handling Backbone.js Collections and Models",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --require mocha-helper.js --recursive src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JSystemsTech/Backbone-Deep-Clone.git"
+  },
+  "keywords": [
+    "clone",
+    "deep clone",
+    "backbone",
+    "backbone deep clone",
+    "collection clone",
+    "model clone",
+    "collection deep clone",
+    "model deep clone",
+    "clone collection",
+    "clone model",
+    "deep clone collection",
+    "deep clone model",
+    "backbone collection clone",
+    "backbone model clone",
+    "backbone collection deep clone",
+    "backbone model deep clone",
+    "backbone clone collection",
+    "backbone clone model",
+    "backbone deep clone collection",
+    "backbone deep clone model"
+  ],
+  "author": "JSystemsTech <jsystemstech@gmail.com> (http://jsystemstech.com)",
+  "dependencies": {
+    "underscore": "^1.6.9",
+    "backbone": "^1.2.2"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JSystemsTech/Backbone-Deep-Clone/issues"
+  },
+  "homepage": "https://github.com/JSystemsTech/Backbone-Deep-Clone#readme",
+  "devDependencies": {
+    "browserify": "^10.2.4",
+    "gulp": "^3.9.0",
+    "gulp-istanbul": "^0.10.0",
+    "gulp-mocha": "^2.1.2",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^1.2.0",
+    "istanbul": "^0.3.16",
+    "mocha": "^2.2.5",
+    "must": "^0.12.0",
+    "sinon": "^1.15.3",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0",
+    "jquery": "x.x.x"
+  }
+}

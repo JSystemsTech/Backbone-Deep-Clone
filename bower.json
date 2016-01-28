@@ -1,0 +1,38 @@
+{
+  "name": "backbonedeepclone",
+  "main": "dist/backbone-deep-clone.min.js",
+  "version": "1.0.0",
+  "homepage": "https://github.com/JSystemsTech/Backbone-Deep-Clone",
+  "authors": [
+    "JSystemsTech <jsystemstech@gmail.com>"
+  ],
+  "description": "A Helper function to deep clone JavaScript objects with support for handling Backbone.js Collections and Models",
+  "keywords": [
+    "clone",
+    "deep clone",
+    "backbone",
+    "backbone deep clone",
+    "collection clone",
+    "model clone",
+    "collection deep clone",
+    "model deep clone",
+    "clone collection",
+    "clone model",
+    "deep clone collection",
+    "deep clone model",
+    "backbone collection clone",
+    "backbone model clone",
+    "backbone collection deep clone",
+    "backbone model deep clone",
+    "backbone clone collection",
+    "backbone clone model",
+    "backbone deep clone collection",
+    "backbone deep clone model"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ]
+}
