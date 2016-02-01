@@ -13281,96 +13281,54 @@ return jQuery;
 
 },{}],4:[function(require,module,exports){
 'use strict';
-
 var _ = require('underscore');
 var Backbone = require('backbone');
-
-var deepCloneColection = function(collection) {
-    var clonedModels = [];
-    _.each(collection.models, function(model) {
-        clonedModels.push(cloneModel(model));
-    });
-    var clonedCollection = new Backbone.Collection(clonedModels);
-    if (!_.isUndefined(collection.url)) {
-        clonedCollection.url = collection.url;
-    }
-    if (!_.isUndefined(collection.fetchOptions)) {
-        clonedCollection.fetchOptions = collection.fetchOptions;
-    }
-    if (!_.isUndefined(collection.model)) {
-        clonedCollection.model = collection.model;
-    }
-    if (!_.isUndefined(collection.originalModels)) {
-        var clonedOriginalModels = [];
-        _.each(collection.originalModels, function(model) {
-            clonedOriginalModels.push(cloneModel(model));
-        });
-        clonedCollection.originalModels = clonedOriginalModels;
-    }
-    return clonedCollection;
+var deepCloneSubItem = function(item) {
+    return deepCloneItem(item);
 };
-var cloneModel = function(model) {
-    return new Backbone.Model(cloneObject(model.attributes));
-};
-var cloneSubObject = function(object) {
-    return cloneObject(object);
-};
-var cloneObject = function(object) {
-    var clonedObject = {};
-    _.each(object, function(value, key) {
-        if ((value instanceof Backbone.Collection) === true) {
-            clonedObject[key] = deepCloneColection(value);
-        } else if ((value instanceof Backbone.Model) === true) {
-            clonedObject[key] = cloneModel(value);
-        } else if (_.isArray(value) === true) {
-            clonedObject[key] = cloneArray(value);
-        } else if (_.isFunction(value)) {
-            clonedObject[key] = value;
-        } else if (_.isObject(value) === true) {
-            clonedObject[key] = cloneSubObject(value);
-        } else {
-            clonedObject[key] = value;
+var deepCloneItem = function(item) {
+    if ((item instanceof Backbone.Collection) === true) {
+        var clonedCollection = new Backbone.Collection(deepCloneSubItem(item.models));
+        if (!_.isUndefined(item.url)) {
+            clonedCollection.url = item.url;
         }
-    });
-    return clonedObject;
-};
-var cloneSubArray = function(array) {
-    return cloneArray(array);
-};
-var cloneArray = function(array) {
-    var clonedArray = [];
-    _.each(array, function(value) {
-        if ((value instanceof Backbone.Collection) === true) {
-            clonedArray.push(deepCloneColection(value));
-        } else if ((value instanceof Backbone.Model) === true) {
-            clonedArray.push(cloneModel(value));
-        } else if (_.isArray(value) === true) {
-            clonedArray.push(cloneSubArray(value));
-        } else if (_.isFunction(value)) {
-            clonedArray.push(value);
-        } else if (_.isObject(value) === true) {
-            clonedArray.push(cloneObject(value));
-        } else {
-            clonedArray.push(value);
+        if (!_.isUndefined(item.fetchOptions)) {
+            clonedCollection.fetchOptions = deepCloneSubItem(item.fetchOptions);
         }
-    });
-    return clonedArray;
-};
-var deepClone = function(objectToClone) {
-    if ((objectToClone instanceof Backbone.Collection) === true) {
-        return deepCloneColection(objectToClone);
-    } else if ((objectToClone instanceof Backbone.Model) === true) {
-        return cloneModel(objectToClone);
-    } else if (_.isArray(objectToClone) === true) {
-        return cloneArray(objectToClone);
-    } else if (_.isFunction(objectToClone)) {
-        return objectToClone;
-    } else if (_.isObject(objectToClone) === true) {
-        return cloneObject(objectToClone);
+        if (!_.isUndefined(item.model)) {
+            clonedCollection.model = item.model;
+        }
+        if (!_.isUndefined(item.originalModels)) {
+            clonedCollection.originalModels = deepCloneSubItem(item.originalModels);
+        }
+        return clonedCollection;
+    } else if ((item instanceof Backbone.Model) === true) {
+        return new Backbone.Model(deepCloneSubItem(item.attributes));
+    } else if (_.isFunction(item) === true || (_.isArray(item) === false && _.isObject(item) === false)) {
+        return item;
     } else {
-        return objectToClone;
+        var clonedArray = [];
+        var clonedObject = {};
+        var addItem = function(value, key) {
+            if (_.isArray(item)) {
+                clonedArray.push(value);
+            } else {
+                clonedObject[key] = value;
+            }
+        }
+        _.each(item, function(value, key) {
+            if (_.isFunction(value) === true || (_.isArray(value) === true && _.isObject(value) === true && (value instanceof Backbone.Collection) === true && (value instanceof Backbone.Model) === true)) {
+                addItem(value, key);
+            } else {
+                addItem(deepCloneSubItem(value), key);
+            }
+        });
+        if (_.isArray(item)) {
+            return clonedArray;
+        }
+        return clonedObject;
     }
 };
-module.exports = deepClone;
+module.exports = deepCloneItem;
 },{"backbone":1,"underscore":3}]},{},[4])(4)
 });
