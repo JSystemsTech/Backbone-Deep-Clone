@@ -111,6 +111,7 @@ Add unit tests for any new or changed functionality. Lint and test your code.
 
 **Release History**
 ----
+* **1.6.1** Update bower.json
 * **1.6.0** Add missing support for deep cloning collection Comparitor and Parse functions and model Validate function. 
 * **1.5.0** Code Refactor and clean up README file
 * **1.0.0** Initial release
