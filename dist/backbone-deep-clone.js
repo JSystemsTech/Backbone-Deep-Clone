@@ -13280,7 +13280,6 @@ return jQuery;
 }.call(this));
 
 },{}],4:[function(require,module,exports){
-'use strict';
 var _ = require('underscore');
 var Backbone = require('backbone');
 var deepCloneSubItem = function(item) {
@@ -13301,9 +13300,19 @@ var deepCloneItem = function(item) {
         if (!_.isUndefined(item.originalModels)) {
             clonedCollection.originalModels = deepCloneSubItem(item.originalModels);
         }
+        if (!_.isUndefined(item.comparator)) {
+            clonedCollection.comparator = item.comparator;
+        }
+        if (!_.isUndefined(item.parse)) {
+            clonedCollection.parse = item.parse;
+        }
         return clonedCollection;
     } else if ((item instanceof Backbone.Model) === true) {
-        return new Backbone.Model(deepCloneSubItem(item.attributes));
+        var clonedModel = new Backbone.Model(deepCloneSubItem(item.attributes));
+        if (!_.isUndefined(item.validate)) {
+            clonedModel.validate = item.validate;
+        }
+        return clonedModel;
     } else if (_.isFunction(item) === true || (_.isArray(item) === false && _.isObject(item) === false)) {
         return item;
     } else {
@@ -13317,7 +13326,7 @@ var deepCloneItem = function(item) {
             }
         }
         _.each(item, function(value, key) {
-            if (_.isFunction(value) === true || (_.isArray(value) === true && _.isObject(value) === true && (value instanceof Backbone.Collection) === true && (value instanceof Backbone.Model) === true)) {
+            if (_.isFunction(value) === true) {
                 addItem(value, key);
             } else {
                 addItem(deepCloneSubItem(value), key);

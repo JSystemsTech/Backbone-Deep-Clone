@@ -9,6 +9,23 @@ var testTopCollection = new Backbone.Collection([new Backbone.Model({
     testAttrB: 'testing'
 })]);
 
+var extendedCollection = Backbone.Collection.extend({
+    comparator: function(model) {
+        return model.get('testAttr');
+    },
+    parse: function(response) {
+        response.testParse = response.testAttr + ' parsed';
+        return response;
+    }
+});
+var extendedModel = Backbone.Model.extend({
+    defaults: {
+        testValidity: true
+    },
+    validate: function(attrs, options) {
+        return attrs.testValidity;
+    }
+});
 var getEmbeddedCollections = function() {
     return new Backbone.Collection([new Backbone.Model({
         embeddedCollectionA: new Backbone.Collection([new Backbone.Model({
@@ -385,6 +402,105 @@ describe('#Testing Deep Cloning Functionality', function() {
             var actualValue = clonedEmbeddedCollections.models[0].get('embeddedCollectionA').models[0].get('embeddedCollectionB').models[0].get('embeddedCollectionC').models[0].get('embeddedCollectionD').models[0].get('lastAttribute');
             var expectedValue = embeddedCollections.models[0].get('embeddedCollectionA').models[0].get('embeddedCollectionB').models[0].get('embeddedCollectionC').models[0].get('embeddedCollectionD').models[0].get('lastAttribute');
             expect(actualValue).to.equal(expectedValue);
+        });
+    });
+    describe('#Testing Extended Model', function() {
+        var testExtendedModel = new extendedModel({
+            testExtendedAttr: 'testing extended model'
+        });
+        var clonedTestExtendedModel = deepClone(testExtendedModel);
+        it('Returns expected testExtendedAttr', function() {
+            expect(clonedTestExtendedModel.get('testExtendedAttr')).to.equal(testExtendedModel.get('testExtendedAttr'));
+        });
+        it('Returns expected testValidity', function() {
+            expect(clonedTestExtendedModel.get('testValidity')).to.equal(testExtendedModel.get('testValidity'));
+        });
+        it('Has correct validate function', function() {
+            expect(clonedTestExtendedModel.validate).to.equal(testExtendedModel.validate);
+        });
+    });
+    describe('#Testing Extended Collection', function() {
+        var testExtendedCollection = new extendedCollection([new Backbone.Model({
+            testAttr: 'test2'
+        }), new Backbone.Model({
+            testAttr: 'test1'
+        }), new Backbone.Model({
+            testAttr: 'test3'
+        })]);
+        var clonedTestExtendedCollection = deepClone(testExtendedCollection);
+        it('Returns expected first model', function() {
+            expect(clonedTestExtendedCollection.models[0].get('testAttr')).to.equal(testExtendedCollection.models[0].get('testAttr'));
+        });
+        it('Returns expected second model', function() {
+            expect(clonedTestExtendedCollection.models[1].get('testAttr')).to.equal(testExtendedCollection.models[1].get('testAttr'));
+        });
+        it('Returns expected third model', function() {
+            expect(clonedTestExtendedCollection.models[2].get('testAttr')).to.equal(testExtendedCollection.models[2].get('testAttr'));
+        });
+        it('Has correct comparator function', function() {
+            expect(clonedTestExtendedCollection.comparator).to.equal(testExtendedCollection.comparator);
+        });
+        it('Has correct parse function', function() {
+            expect(clonedTestExtendedCollection.parse).to.equal(testExtendedCollection.parse);
+        });
+        describe('#Testing Cloned Comparitor: Adding Model to Extended Collection', function() {
+            var clonedTestExtendedCollection2 = deepClone(testExtendedCollection);
+            clonedTestExtendedCollection2.add(new Backbone.Model({
+                testAttr: 'sort test'
+            }));
+            it('Returns expected first model', function() {
+                expect(clonedTestExtendedCollection2.models[0].get('testAttr')).to.equal('sort test');
+            });
+            it('Returns expected second model', function() {
+                expect(clonedTestExtendedCollection2.models[1].get('testAttr')).to.equal('test1');
+            });
+            it('Returns expected third model', function() {
+                expect(clonedTestExtendedCollection2.models[2].get('testAttr')).to.equal('test2');
+            });
+            it('Returns expected fourth model', function() {
+                expect(clonedTestExtendedCollection2.models[3].get('testAttr')).to.equal('test3');
+            });
+        });
+        describe('#Testing Cloned Comparitor: Removing Model from Extended Collection', function() {
+            var clonedTestExtendedCollection3 = deepClone(testExtendedCollection);
+            clonedTestExtendedCollection3.remove(clonedTestExtendedCollection3.where({
+                testAttr: 'test2'
+            })[0]);
+            it('Returns expected first model', function() {
+                expect(clonedTestExtendedCollection3.models[0].get('testAttr')).to.equal('test1');
+            });
+            it('Returns expected second model', function() {
+                expect(clonedTestExtendedCollection3.models[1].get('testAttr')).to.equal('test3');
+            });
+        });
+        describe('#Testing Cloned Comparitor: Reseting Models on Extended Collection', function() {
+            var clonedTestExtendedCollection4 = deepClone(testExtendedCollection);
+            clonedTestExtendedCollection4.reset([new Backbone.Model({
+                testAttr: 'test2'
+            }), new Backbone.Model({
+                testAttr: 'test5'
+            }), new Backbone.Model({
+                testAttr: 'test1'
+            }), new Backbone.Model({
+                testAttr: 'test4'
+            }), new Backbone.Model({
+                testAttr: 'test3'
+            })]);
+            it('Returns expected first model', function() {
+                expect(clonedTestExtendedCollection4.models[0].get('testAttr')).to.equal('test1');
+            });
+            it('Returns expected second model', function() {
+                expect(clonedTestExtendedCollection4.models[1].get('testAttr')).to.equal('test2');
+            });
+            it('Returns expected third model', function() {
+                expect(clonedTestExtendedCollection4.models[2].get('testAttr')).to.equal('test3');
+            });
+            it('Returns expected fourth model', function() {
+                expect(clonedTestExtendedCollection4.models[3].get('testAttr')).to.equal('test4');
+            });
+            it('Returns expected fifth model', function() {
+                expect(clonedTestExtendedCollection4.models[4].get('testAttr')).to.equal('test5');
+            });
         });
     });
 });
